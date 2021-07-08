@@ -50,9 +50,12 @@
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="#contact">Log in</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{{ url_for('register') }}">Register</a>
+            </li>
         </ul>
         <form class="d-flex">
-               <a class="btn btn-primary" target="_blank" href="assets/cv/yuriy_kovalchuk_cv.pdf">Register<i class="fas fa-download"></i></a>
+               <a class="btn btn-primary" target="_blank" href="{{ url_for('register') }}">Register<i class="fas fa-download"></i></a>
         </form>
         </div>
     </div>
