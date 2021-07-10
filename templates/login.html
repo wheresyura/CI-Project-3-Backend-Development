@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h3 class="center-align">Register</h3>
+<h3 class="center-align">Log In</h3>
 
-<form method="POST" action="{{ url_for('register') }}">
+<form method="POST" action="{{ url_for('login') }}">
     <div class="mb-3">
 		
       <label for="username" class="form-label">Username</label>
@@ -22,17 +22,18 @@
       <input type="checkbox" class="form-check-input" id="exampleCheck1">
       <label class="form-check-label" for="exampleCheck1">Check me out</label>
     </div>
-    
-    <button type="submit" class="btn btn-primary">Submit</button>
+
+    <button type="submit" class="btn btn-primary">Log In</button>
   </form>
 
+  <div class="row">
     <div>
-        <p>
-            Already Registered?
-            <a href="{{ url_for('login') }}">Log In</a>
+        <p class="center-align">
+            New Here?
+            <a href="{{ url_for('register') }}">Register Account</a>
         </p>
     </div>
-
+</div>
 
 
   {% endblock %}
