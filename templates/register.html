@@ -7,14 +7,16 @@
     <div class="mb-3">
 		
       <label for="username" class="form-label">Username</label>
-      <input type="text" name="username" class="validate" id="username" aria-describedby="emailHelp">
+      <input type="text" name="username" class="validate" id="username" minlength="5"
+      maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" required>
       
     </div>
     <div class="mb-3">
 
                        
       <label for="password" class="form-label">Password</label>
-      <input type="password" class="validate" id="password" name="password">
+      <input type="password" class="validate" id="password" name="password" minlength="5"
+      maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" required>
     </div>
     <div class="mb-3 form-check">
       <input type="checkbox" class="form-check-input" id="exampleCheck1">
