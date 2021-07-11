@@ -11,17 +11,24 @@
     {% endfor %}
 
     <div class="accordion" id="accordionExample">
+      {% for task in tasks %}
         <div class="accordion-item">
           <h2 class="accordion-header" id="headingOne">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              Accordion Item #1
+              <strong>{{ task.task_name }}</strong> : {{ task.due_date }}
+              {% if task.is_urgent == "off" %}
+              <i class="fas fa-exclamation-circle light-blue-text text-lighten-2 tooltipped"
+              ></i>
+              {% endif %}
             </button>
           </h2>
           <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
             <div class="accordion-body">
-              <strong>This is the first item's accordion body.</strong> 
+              <strong>{{ task.category_name }}</strong>
+                <p>{{ task.task_description }}</p>
             </div>
           </div>
+          {% endfor %}
         </div>
 
         
