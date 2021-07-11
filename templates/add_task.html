@@ -5,6 +5,7 @@
 
 
     <form method="POST" action="">
+       <!-- category selection -->
         <div class="row">
 				<div class="input-field col s12">
                     <i class="fas fa-folder-open prefix light-blue-text text-darken-4"></i>
@@ -17,24 +18,27 @@
 					<label for="category_name">Task Category</label>
 				</div>
 			</div>
-    <div class="dropdown">
+    <!-- <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
               Dropdown button
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li><a class="dropdown-item" href="#">Action</a></li>
             </ul>
-    </div>
+    </div> -->
+    <!-- task name -->
     <div class="mb-3 w-50 p-3">
         <input id="task_name" name="task_name" minlength="5" maxlength="50"
         type="text" class="validate" required>
     <label for="task_name">Task Name</label>
       </div>
+       <!-- task description -->
       <div class="mb-3 w-50 p-3">
         <textarea id="task_description" name="task_description" minlength="5"
                         maxlength="200" class="materialize-textarea validate" required></textarea>
                     <label for="task_description">Task Description</label>
       </div>
+        <!-- is urgent toggle -->
       <div class="form-check form-switch">
             <i class="fas fa-exclamation-circle prefix"></i>
             <label for="is_urgent">
@@ -42,7 +46,9 @@
                 <span class="lever"></span>
                 Is Urgent
             </label>
+      <!-- submit button -->
       </div>
+      <button type="submit" class="btn btn-dark">Add Task <i class="fas fa-plus-square right"></i></button>
     
     </form>
 
