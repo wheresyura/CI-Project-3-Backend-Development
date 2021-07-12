@@ -12,7 +12,11 @@
 					<select id="category_name" name="category_name" class="validate" required>
                         <option value="" disabled selected>Choose Category</option>
                         {% for category in categories %}
-                            <option value="{{ category.category_name }}">{{ category.category_name }}</option>
+                            {% if category.category_name == task.category_name %}
+                                <option value="{{ category.category_name }}" selected>{{ category.category_name }}</option>
+                            {% else %}
+                                <option value="{{ category.category_name }}">{{ category.category_name }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
 					<label for="category_name">Task Category</label>
@@ -29,26 +33,37 @@
     <!-- task name -->
     <div class="mb-3 w-50 p-3">
         <input id="task_name" name="task_name" minlength="5" maxlength="50"
-        type="text" class="validate" required>
+        type="text" class="validate" value="{{ task.task_name }}" required>
     <label for="task_name">Task Name</label>
       </div>
        <!-- task description -->
       <div class="mb-3 w-50 p-3">
         <textarea id="task_description" name="task_description" minlength="5"
-                        maxlength="200" class="materialize-textarea validate" required></textarea>
+                        maxlength="200" class="materialize-textarea validate" required>{{- task.task_description -}}</textarea>
                     <label for="task_description">Task Description</label>
       </div>
         <!-- is urgent toggle -->
       <div class="form-check form-switch">
             <i class="fas fa-exclamation-circle prefix"></i>
             <label for="is_urgent">
-                <input type="checkbox" id="is_urgent" name="is_urgent">
+                {% if task.is_urgent == "on" %}
+                                <input type="checkbox" id="is_urgent" name="is_urgent" checked>
+                            {% else %}
+                                <input type="checkbox" id="is_urgent" name="is_urgent">
+                            {% endif %}
                 <span class="lever"></span>
                 Is Urgent
             </label>
-      <!-- submit button -->
+    
+      
       </div>
+       <!-- cancel button -->
+       <a href="{{ url_for('get_tasks') }}" class="btn">
+        Cancel <i class="fas fa-times-circle right"></i>
+    </a>
+        <!-- submit button -->
       <button type="submit" class="btn btn-dark">Edit <i class="fas fa-edit right"></i></button>
+     
     
     </form>
 
