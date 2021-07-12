@@ -33,8 +33,10 @@
             </div>
             <div>
               <i></i>
-              <a href="" class="btn"> Done</a>
-              <a href="{{ url_for('edit_task', task_id=task._id) }}" class="btn">Edit</a>
+              {% if session.user|lower == task.created_by|lower %}
+                <a href="" class="btn"> Done</a>
+                <a href="{{ url_for('edit_task', task_id=task._id) }}" class="btn">Edit</a>
+              {% endif %}
           </div>
           </div>
           {% endfor %}
