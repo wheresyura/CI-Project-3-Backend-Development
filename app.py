@@ -18,6 +18,81 @@ app.secret_key = os.environ.get("SECRET_KEY")
 mongo = PyMongo(app)
 
 
+"""
+Example:
+https://github.com/richardhenyash/freefrom
+https://github.com/dejvoss/cs_cdins-msp3-recipe-book
+https://github.com/elisamunoz/docu-llamas
+
+Frontend
+
+1. CRUD
+    
+    - Make sure that add/edit/delete can only be done by the person who created the recipe --> Required
+    - Exception Handling --> Required
+        https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-vii-error-handling
+        https://docs.python.org/3/tutorial/errors.html
+    - Use of Forms --> Optional
+
+    HTML:
+        POST --> Saving to the db without validation
+
+    Form:
+        POST --> forms.validate_on_submit() (basically passes the data in the request through the Form validations for each field) --> Save the form data not the request data
+
+    https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms
+    https://hackersandslackers.com/flask-wtforms-forms/
+
+    - Using different apps for Profiles and Recipes (blueprint as a library) --> Optional
+    - Upload and save a file --> Needed
+    - Add email --> Adding some JS (recommended)
+
+2. Experiment with the schema:
+
+users collection
+{
+    username
+    password
+}
+
+recipes collection
+{
+    name: str
+    description: str
+    cooking_time: str
+    photo: str --> file location where the photo is saved <img src="{{ recipe.photo }}">
+        https://stackoverflow.com/questions/44926465/upload-image-in-flask
+    ingredients: List[dict] = [
+        {
+            _id: ObjectId(...)
+            amount: int
+            measure: str
+        },
+        ...
+        {
+
+        }        
+    ]
+}
+
+ingredients collection
+{
+    name
+    description
+    additives
+    photo
+}
+
+"""
+
+
+def is_logged_in():
+    """
+    return: None or the username
+    """
+    return session.get("user")
+
+
 @app.route("/")
 @app.route("/get_tasks")
 def get_tasks():
@@ -59,9 +134,9 @@ def login():
             # ensure hashed password matches user input
             if check_password_hash(
                 existing_user["password"], request.form.get("password")):
-                    session["user"] = request.form.get("username").lower()
-                    flash("Welcome, {}".format(request.form.get("username")))
-                    return redirect(url_for("profile", username=session["user"]))
+                session["user"] = request.form.get("username").lower()
+                flash("Welcome, {}".format(request.form.get("username")))
+                return redirect(url_for("profile", username=session["user"]))
             else:
                 # invalid password match
                 flash("Incorrect Username and/or Password")
@@ -155,6 +230,26 @@ def add_category():
 
     return render_template("add_category.html")
 
+"""
+@app.errorhandler(404)
+def handle_keyerror(e):
+    return render_template("/error.html", {...}), 404
+
+@app.errorhandler(KeyError)
+def handle_keyerror(e):
+    return render_template("/error.html", {...}), 500
+
+@app.errorhandler(Exception)
+def handle_bad_request(e):
+    if isinstance(e, bson.errors.InvalidId):
+        flash("An error with the database occurred, couldn't find recipe", e)
+        return render_template("/error.html", {"message": "..."})
+
+    if isinstance(e, pymongo.errors.CursorNotFound):
+        flash("An error with the database occurred, couldn't find recipe", e)
+    print(type(e))
+    return render_template("/error.html", {...}), 500
+"""
 
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
