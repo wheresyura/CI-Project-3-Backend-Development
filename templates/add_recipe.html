@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h3>Add Recipe</h3>
+
+
+    <form method="POST" action="{{ url_for('add_recipe') }}">
+       <!-- category selection -->
+        <div class="row">
+				<div class="input-field col s12">
+                    <i class="fas fa-folder-open prefix light-blue-text text-darken-4"></i>
+					<select id="category_name" name="category_name" class="validate" required>
+                        <option value="" disabled selected>Meal Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.category_name }}">{{ category.category_name }}</option>
+                        {% endfor %}
+                    </select>
+					<label for="category_name">Recipe Category</label>
+				</div>
+			</div>
+    <!-- <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              Dropdown button
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+            </ul>
+    </div> -->
+    <!-- recipe name -->
+    <div class="mb-3 w-50 p-3">
+        <input id="recipe_name" name="recipe_name" minlength="5" maxlength="50"
+        type="text" class="validate" required>
+    <label for="recipe_name">Recipe Name</label>
+      </div>
+       <!-- recipe description -->
+      <div class="mb-3 w-50 p-3">
+        <textarea id="recipe_description" name="recipe_description" minlength="5"
+                        maxlength="200" class="materialize-textarea validate" required></textarea>
+                    <label for="recipe_description">Recipe Description</label>
+      </div>
+
+      <!-- recipe description -->
+      <div class="mb-3 w-50 p-3">
+      <input type="number" id="preparation_time" name="preparation_time" min="1"
+                      max="60" value="3" required></textarea>
+                  <label for="preparation_time">Preparation Time</label>
+      </div>
+      
+      <hr>
+      <h3>Ingredients list</h3>
+      <input type="hidden" id="ingredients" name="ingredients">
+      
+      <div id="current_ingridients">
+      </div>
+
+      <div class="input-group mb-3">
+        <span class="input-group-text">Name</span>
+        <input type="text" id="ingredient_name"  class="validate" required>
+
+        <span class="input-group-text">Amount</span>
+        <input type="number" id="ingredient_amount"  class="form-control" placeholder="0">
+
+        <span class="input-group-text">Measure</span>
+        <select class="form-select" id="ingredient_measure" >
+          <option value="grams" selected>grams</option>
+          <option value="spoons">spoons</option>
+          <option value="pieces">pieces</option>
+        </select>
+
+        <button class="btn btn-primary" onclick="add_ingridient()">Add to the Ingredients list</button>
+      </div>
+   
+
+      <!-- submit button -->
+    
+      <button type="submit" class="btn btn-dark">Add Recipe <i class="fas fa-plus-square right"></i></button>
+    
+    </form>
+
+{% endblock %}
