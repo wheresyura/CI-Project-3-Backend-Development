@@ -1,4 +1,5 @@
 function add_ingridient(){
+    
     let hidden_ingredients = $('#ingredients');
     let ingredients = [];
 
@@ -8,8 +9,8 @@ function add_ingridient(){
 
     let ingr = { name: ingr_name, amount: ingr_amount, measure: ingr_measure };
 
-    if (hidden_ingredients.text() !== "") {
-        ingredients = JSON.parse(hidden_ingredients.text());
+    if (hidden_ingredients.val() !== "") {
+        ingredients = JSON.parse(hidden_ingredients.val());
     } 
 
     ingredients.push(ingr);
@@ -19,7 +20,7 @@ function add_ingridient(){
 
 function remove_ingridient(name){
     let hidden_ingredients = $('#ingredients');
-    let ingredients = JSON.parse(hidden_ingredients.text());
+    let ingredients = JSON.parse(hidden_ingredients.val());
 
     let indx = ingredients.findIndex(x => x.name == name);
     if(indx > -1) {
@@ -32,7 +33,7 @@ function remove_ingridient(name){
 function display_ingridients(ingredients){
     let hidden_ingredients = $('#ingredients');
 
-    hidden_ingredients.text(JSON.stringify(ingredients));
+    hidden_ingredients.val(JSON.stringify(ingredients));
 
     let new_ingridients_string = '<h4 class="container">';
     ingredients.forEach(element => {

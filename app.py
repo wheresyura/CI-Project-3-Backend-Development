@@ -7,6 +7,7 @@ from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 if os.path.exists("env.py"):
     import env
+import json
 
 
 app = Flask(__name__)
@@ -94,10 +95,10 @@ def is_logged_in():
 
 
 @app.route("/")
-@app.route("/get_tasks")
-def get_tasks():
-    tasks = list(mongo.db.tasks.find())
-    return render_template("tasks.html", tasks=tasks)
+@app.route("/get_recipes")
+def get_recipes():
+    recipes = list(mongo.db.recipes.find())
+    return render_template("recipes.html", recipes=recipes)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -172,13 +173,14 @@ def logout():
 @app.route("/add_recipe", methods=["GET", "POST"])
 def add_recipe():
     if request.method == "POST":
-        is_urgent = "on" if request.form.get("is_urgent") else "off"
+        # is_urgent = "on" if request.form.get("is_urgent") else "off"
         recipe = {
             "category_name": request.form.get("category_name"),
             "recipe_name": request.form.get("recipe_name"),
             "recipe_description": request.form.get("recipe_description"),
             "preparation_time": request.form.get("preparation_time"),
-            "created_by": session["user"]
+            "created_by": session["user"],
+            "ingredients": json.loads(request.form.get("ingredients"))
         }
         mongo.db.recipes.insert_one(recipe)
         flash("recipe Successfully Added")
@@ -210,7 +212,7 @@ def edit_task(task_id):
 def delete_task(task_id):
     mongo.db.tasks.remove({"_id": ObjectId(task_id)})
     flash("Task Successfully Deleted")
-    return redirect(url_for("get_tasks"))
+    return redirect(url_for("get_recipes"))
 
 @app.route("/get_categories")
 def get_categories():
