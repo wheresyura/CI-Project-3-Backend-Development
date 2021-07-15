@@ -8,6 +8,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 if os.path.exists("env.py"):
     import env
 import json
+from werkzeug.utils import secure_filename
+
+
+UPLOAD_FOLDER = 'static/images/recipes'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 
 app = Flask(__name__)
@@ -15,6 +20,7 @@ app = Flask(__name__)
 app.config["MONGO_DBNAME"] = os.environ.get("MONGO_DBNAME")
 app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 app.secret_key = os.environ.get("SECRET_KEY")
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 mongo = PyMongo(app)
 
@@ -173,7 +179,46 @@ def logout():
 @app.route("/add_recipe", methods=["GET", "POST"])
 def add_recipe():
     if request.method == "POST":
-        # is_urgent = "on" if request.form.get("is_urgent") else "off"
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        recipe = {
+            "category_name": request.form.get("category_name"),
+            "recipe_name": request.form.get("recipe_name"),
+            "recipe_description": request.form.get("recipe_description"),
+            "preparation_time": request.form.get("preparation_time"),
+            "created_by": session["user"],
+            "ingredients": json.loads(request.form.get("ingredients")),
+            "photo": os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        }
+        file = request.files['file']
+        mongo.db.recipes.insert_one(recipe)
+        flash("recipe Successfully Added")
+        return redirect(url_for("get_recipes"))
+
+    categories = mongo.db.categories.find().sort("category_name", 1)
+    return render_template("add_recipe.html", categories=categories)
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route("/edit_recipe/<recipe_id>", methods=["GET", "POST"])
+def edit_recipe(recipe_id):
+    if request.method == "POST":
         recipe = {
             "category_name": request.form.get("category_name"),
             "recipe_name": request.form.get("recipe_name"),
@@ -182,36 +227,20 @@ def add_recipe():
             "created_by": session["user"],
             "ingredients": json.loads(request.form.get("ingredients"))
         }
-        mongo.db.recipes.insert_one(recipe)
-        flash("recipe Successfully Added")
-        return redirect(url_for("get_recipes"))
+        mongo.db.recipes.update({"_id": ObjectId(recipe_id)}, recipe)
+        flash("Recipe Successfully Updated")
 
+    recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
     categories = mongo.db.categories.find().sort("category_name", 1)
-    return render_template("add_recipe.html", categories=categories)
 
-@app.route("/edit_task/<task_id>", methods=["GET", "POST"])
-def edit_task(task_id):
-    if request.method == "POST":
-        is_urgent = "on" if request.form.get("is_urgent") else "off"
-        submit = {
-            "category_name": request.form.get("category_name"),
-            "task_name": request.form.get("task_name"),
-            "task_description": request.form.get("task_description"),
-            "is_urgent": is_urgent,
-            "due_date": request.form.get("due_date"),
-            "created_by": session["user"]
-        }
-        mongo.db.tasks.update({"_id": ObjectId(task_id)}, submit)
-        flash("Task Successfully Updated")
+    # return recipe.ingredients
 
-    task = mongo.db.tasks.find_one({"_id": ObjectId(task_id)})
-    categories = mongo.db.categories.find().sort("category_name", 1)
-    return render_template("edit_task.html", task=task, categories=categories)
+    return render_template("edit_recipe.html", recipe=recipe, categories=categories)
 
-@app.route("/delete_task/<task_id>")
-def delete_task(task_id):
-    mongo.db.tasks.remove({"_id": ObjectId(task_id)})
-    flash("Task Successfully Deleted")
+@app.route("/delete_recipe/<recipe_id>")
+def delete_recipe(recipe_id):
+    mongo.db.recipes.remove({"_id": ObjectId(recipe_id)})
+    flash("Recipe Successfully Deleted")
     return redirect(url_for("get_recipes"))
 
 @app.route("/get_categories")

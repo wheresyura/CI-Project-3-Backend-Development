@@ -4,7 +4,7 @@
     <h3>Add Recipe</h3>
 
 
-    <form method="POST" action="{{ url_for('add_recipe') }}">
+    <form method="POST" action="{{ url_for('add_recipe') }}" enctype="multipart/form-data">
        <!-- category selection -->
         <div class="row">
 				<div class="input-field col s12">
@@ -70,6 +70,11 @@
         <button type="button" class="btn btn-primary" onclick="add_ingridient()">Add to the Ingredients list</button>
       </div>
    
+
+      <div class="form-group">
+        <label for="recipe_picture">Upload Recipe Picture</label>
+        <input type="file" class="form-control-file" id="file" name="file">
+      </div>
 
       <!-- submit button -->
     
