@@ -7,7 +7,7 @@ from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 if os.path.exists("env.py"):
     import env
-import json
+import json, sys
 from werkzeug.utils import secure_filename
 
 
@@ -178,37 +178,47 @@ def logout():
 
 @app.route("/add_recipe", methods=["GET", "POST"])
 def add_recipe():
-    if request.method == "POST":
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    try:
+        if request.method == "POST":
+            # # check if the post request has the file part
+            # if 'file' not in request.files:
+            #     flash('No file part')
+            #     return redirect(request.url)
 
-        recipe = {
-            "category_name": request.form.get("category_name"),
-            "recipe_name": request.form.get("recipe_name"),
-            "recipe_description": request.form.get("recipe_description"),
-            "preparation_time": request.form.get("preparation_time"),
-            "created_by": session["user"],
-            "ingredients": json.loads(request.form.get("ingredients")),
-            "photo": os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        }
-        file = request.files['file']
-        mongo.db.recipes.insert_one(recipe)
-        flash("recipe Successfully Added")
+            file = request.files['file']
+
+            # # if user does not select file, browser also
+            # # submit an empty part without filename
+            # if file.filename == '':
+            #     flash('No selected file')
+            #     return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+                recipe = {
+                    "category_name": request.form.get("category_name"),
+                    "recipe_name": request.form.get("recipe_name"),
+                    "recipe_description": request.form.get("recipe_description"),
+                    "preparation_time": request.form.get("preparation_time"),
+                    "created_by": session["user"],
+                    "ingredients": json.loads(request.form.get("ingredients")),
+                    "photo": os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                }
+                file = request.files['file']
+                mongo.db.recipes.insert_one(recipe)
+                flash("recipe Successfully Added")
+                return redirect(url_for("get_recipes"))
+            else:
+                flash ("Unexpected error: Please attach the image")
+                raise Exception("Please attach the image")
+
+        categories = mongo.db.categories.find().sort("category_name", 1)
+        return render_template("add_recipe.html", categories=categories)
+
+    except:
         return redirect(url_for("get_recipes"))
 
-    categories = mongo.db.categories.find().sort("category_name", 1)
-    return render_template("add_recipe.html", categories=categories)
 
 
 def allowed_file(filename):
