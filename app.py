@@ -1,25 +1,28 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import os
-from flask import (
-    Flask, flash, render_template,
-    redirect, request, session, url_for)
+from flask import Flask, flash, render_template, redirect, request, \
+    session, url_for
+
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
-from werkzeug.security import generate_password_hash, check_password_hash
-if os.path.exists("env.py"):
+from werkzeug.security import generate_password_hash, \
+    check_password_hash
+if os.path.exists('env.py'):
     import env
-import json, sys
+import json
 from werkzeug.utils import secure_filename
-
+import bson
+from utils import is_logged_in, allowed_file
+import traceback
 
 UPLOAD_FOLDER = 'static/images/recipes'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
 
 app = Flask(__name__)
 
-app.config["MONGO_DBNAME"] = os.environ.get("MONGO_DBNAME")
-app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
-app.secret_key = os.environ.get("SECRET_KEY")
+app.config['MONGO_DBNAME'] = os.environ.get('MONGO_DBNAME')
+app.config['MONGO_URI'] = os.environ.get('MONGO_URI')
+app.secret_key = os.environ.get('SECRET_KEY')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 mongo = PyMongo(app)
@@ -51,6 +54,24 @@ Frontend
     https://hackersandslackers.com/flask-wtforms-forms/
 
     - Using different apps for Profiles and Recipes (blueprint as a library) --> Optional
+
+    Profiles app --> @profiles.route("/")
+        /profiles
+    Exception Handling app
+        /
+
+    profiles
+    products
+    bag
+    media
+        ...
+    reports
+        urls.py
+        views.py
+    discounts
+        urls.py
+        views.py
+
     - Upload and save a file --> Needed
     - Add email --> Adding some JS (recommended)
 
@@ -90,208 +111,182 @@ ingredients collection
     photo
 }
 
+Definitely Add:
+0. Design
+1. Function documentation
+2. Comments
+3. Format HTML and Python and JS, make sure you have no errors
+4. README File
+    - Include the DB schema
+    - Improvements
+    - Additional features
+    - Bugs
+    - Testing
 """
 
 
-def is_logged_in():
-    """
-    return: None or the username
-    """
-    return session.get("user")
-
-
-@app.route("/")
-@app.route("/get_recipes")
+@app.route('/')
+@app.route('/get_recipes')
 def get_recipes():
     recipes = list(mongo.db.recipes.find())
-    return render_template("recipes.html", recipes=recipes)
+    return render_template('recipes.html', recipes=recipes)
 
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == "POST":
+    if request.method == 'POST':
         # check if username already exists in db
-        existing_user = mongo.db.users.find_one(
-            {"username": request.form.get("username").lower()})
-
+        existing_user = \
+            mongo.db.users.find_one({'username': request.form.get('username').lower()})
         if existing_user:
-            flash("Username already exists")
-            return redirect(url_for("register"))
+            flash('Username already exists')
+            return redirect(url_for('register'))
 
-        register = {
-            "username": request.form.get("username").lower(),
-            "password": generate_password_hash(request.form.get("password"))
-        }
+        register = {'username': request.form.get('username').lower(),
+                    'password': generate_password_hash(request.form.get('password'))}
         mongo.db.users.insert_one(register)
 
         # put the new user into 'session' cookie
-        session["user"] = request.form.get("username").lower()
-        flash("Registration Successful!")
-        return redirect(url_for("profile", username=session["user"]))
-    return render_template("register.html")
+        session['user'] = request.form.get('username').lower()
+        flash('Registration Successful!')
+        return redirect(url_for('profile', username=session['user']))
+    return render_template('register.html')
 
-@app.route("/login", methods=["GET", "POST"])
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == "POST":
+    if request.method == 'POST':
         # check if username exists in db
-        existing_user = mongo.db.users.find_one(
-            {"username": request.form.get("username").lower()})
-
+        existing_user = \
+            mongo.db.users.find_one({'username': request.form.get('username').lower()})
         if existing_user:
             # ensure hashed password matches user input
-            if check_password_hash(
-                existing_user["password"], request.form.get("password")):
-                session["user"] = request.form.get("username").lower()
-                flash("Welcome, {}".format(request.form.get("username")))
-                return redirect(url_for("profile", username=session["user"]))
+            if check_password_hash(existing_user['password'],
+                                   request.form.get('password')):
+                session['user'] = request.form.get('username').lower()
+                flash('Welcome, {}'.format(request.form.get('username')))
+                return redirect(url_for('profile',
+                                username=session['user']))
             else:
                 # invalid password match
-                flash("Incorrect Username and/or Password")
-                return redirect(url_for("login"))
-
+                flash('Incorrect Username and/or Password')
+                return redirect(url_for('login'))
         else:
             # username doesn't exist
-            flash("Incorrect Username and/or Password")
-            return redirect(url_for("login"))
+            flash('Incorrect Username and/or Password')
+            return redirect(url_for('login'))
+    return render_template('login.html')
 
-    return render_template("login.html")
 
-
-@app.route("/profile/<username>", methods=["GET", "POST"])
+@app.route('/profile/<username>', methods=['GET', 'POST'])
 def profile(username):
-    # grab the session user's username from db
-    username = mongo.db.users.find_one(
-        {"username": session["user"]})["username"]
-
-    if session["user"]:
-        return render_template("profile.html", username=username)
-
-    return redirect(url_for("login"))
+    if is_logged_in(session):
+        # grab the session user's username from db
+        username = mongo.db.users.find_one({'username': session['user']})['username']
+        return render_template('profile.html', username=username)
+    return redirect(url_for('login'))
 
 
-@app.route("/logout")
+@app.route('/logout')
 def logout():
-    # remove user from session cookie
-    flash("You have been logged out")
-    session.pop("user")
-    return redirect(url_for("login"))
+    if is_logged_in(session):
+        # remove user from session cookie
+        flash('You have been logged out')
+        session.pop('user')
+    return redirect(url_for('login'))
 
-@app.route("/add_recipe", methods=["GET", "POST"])
+
+@app.route('/add_recipe', methods=['GET', 'POST'])
 def add_recipe():
-    try:
-        if request.method == "POST":
-            # # check if the post request has the file part
-            # if 'file' not in request.files:
-            #     flash('No file part')
-            #     return redirect(request.url)
-
-            file = request.files['file']
-
-            # # if user does not select file, browser also
-            # # submit an empty part without filename
-            # if file.filename == '':
-            #     flash('No selected file')
-            #     return redirect(request.url)
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-                recipe = {
-                    "category_name": request.form.get("category_name"),
-                    "recipe_name": request.form.get("recipe_name"),
-                    "recipe_description": request.form.get("recipe_description"),
-                    "preparation_time": request.form.get("preparation_time"),
-                    "created_by": session["user"],
-                    "ingredients": json.loads(request.form.get("ingredients")),
-                    "photo": os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                }
-                file = request.files['file']
-                mongo.db.recipes.insert_one(recipe)
-                flash("recipe Successfully Added")
-                return redirect(url_for("get_recipes"))
-            else:
-                flash ("Unexpected error: Please attach the image")
-                raise Exception("Please attach the image")
-
-        categories = mongo.db.categories.find().sort("category_name", 1)
-        return render_template("add_recipe.html", categories=categories)
-
-    except:
-        return redirect(url_for("get_recipes"))
+    if request.method == 'POST':
+        # check if the post request has the file part
+        file = request.files.get('file')
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            recipe = {
+                'category_name': request.form.get('category_name'),
+                'recipe_name': request.form.get('recipe_name'),
+                'recipe_description': request.form.get('recipe_description'),
+                'preparation_time': request.form.get('preparation_time'),
+                'created_by': session['user'],
+                'ingredients': json.loads(request.form.get('ingredients')),
+                'photo': file_path,
+            }
+            mongo.db.recipes.insert_one(recipe)
+            flash('recipe Successfully Added')
+            return redirect(url_for('get_recipes'))
+        else:
+            flash('Unexpected error: Please attach the image')
+            raise Exception('Please attach the image')
+    categories = mongo.db.categories.find().sort('category_name', 1)
+    return render_template('add_recipe.html', categories=categories)
 
 
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-@app.route("/edit_recipe/<recipe_id>", methods=["GET", "POST"])
+@app.route('/edit_recipe/<recipe_id>', methods=['GET', 'POST'])
 def edit_recipe(recipe_id):
-    if request.method == "POST":
+    if is_logged_in(session) and request.method == 'POST':
         recipe = {
-            "category_name": request.form.get("category_name"),
-            "recipe_name": request.form.get("recipe_name"),
-            "recipe_description": request.form.get("recipe_description"),
-            "preparation_time": request.form.get("preparation_time"),
-            "created_by": session["user"],
-            "ingredients": json.loads(request.form.get("ingredients"))
-        }
-        mongo.db.recipes.update({"_id": ObjectId(recipe_id)}, recipe)
-        flash("Recipe Successfully Updated")
+            'category_name': request.form.get('category_name'),
+            'recipe_name': request.form.get('recipe_name'),
+            'recipe_description': request.form.get('recipe_description'),
+            'preparation_time': request.form.get('preparation_time'),
+            'created_by': session['user'],
+            # 'ingredients': json.loads(request.form.get('ingredients')),
+            }
+        mongo.db.recipes.update({'_id': ObjectId(recipe_id)}, recipe)
+        flash('Recipe Successfully Updated')
+        return redirect(url_for('get_recipes'))
+    recipe = mongo.db.recipes.find_one({'_id': ObjectId(recipe_id)})
+    categories = mongo.db.categories.find().sort('category_name', 1)
+    return render_template('edit_recipe.html', recipe=recipe, categories=categories)
 
-    recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
-    categories = mongo.db.categories.find().sort("category_name", 1)
 
-    # return recipe.ingredients
-
-    return render_template("edit_recipe.html", recipe=recipe, categories=categories)
-
-@app.route("/delete_recipe/<recipe_id>")
+@app.route('/delete_recipe/<recipe_id>')
 def delete_recipe(recipe_id):
-    mongo.db.recipes.remove({"_id": ObjectId(recipe_id)})
-    flash("Recipe Successfully Deleted")
-    return redirect(url_for("get_recipes"))
+    mongo.db.recipes.remove({'_id': ObjectId(recipe_id)})
+    flash('Recipe Successfully Deleted')
+    return redirect(url_for('get_recipes'))
 
-@app.route("/get_categories")
+
+@app.route('/get_categories')
 def get_categories():
-    categories = list(mongo.db.categories.find().sort("category_name", 1))
-    return render_template("categories.html", categories=categories)
+    categories = list(mongo.db.categories.find().sort('category_name',
+                      1))
+    return render_template('categories.html', categories=categories)
 
-@app.route("/add_category", methods=["GET", "POST"])
+
+@app.route('/add_category', methods=['GET', 'POST'])
 def add_category():
-    if request.method == "POST":
-        category = {
-            "category_name": request.form.get("category_name")
-        }
+    if request.method == 'POST':
+        category = {'category_name': request.form.get('category_name')}
         mongo.db.categories.insert_one(category)
-        flash("New Category Added")
-        return redirect(url_for("get_categories"))
+        flash('New Category Added')
+        return redirect(url_for('get_categories'))
+    return render_template('add_category.html')
 
-    return render_template("add_category.html")
 
-"""
+# Exception Handling
+@app.errorhandler(bson.errors.InvalidId)
+def handle_bson_error(e):
+    return (render_template('error.html', error_message='Database Error', error_code=500), 500)
+
+
 @app.errorhandler(404)
-def handle_keyerror(e):
-    return render_template("/error.html", {...}), 404
+def handle_not_found(e):
+    return (render_template('error.html',
+            error_message='Oops... Not Found', error_code=404), 404)
 
-@app.errorhandler(KeyError)
-def handle_keyerror(e):
-    return render_template("/error.html", {...}), 500
 
 @app.errorhandler(Exception)
-def handle_bad_request(e):
-    if isinstance(e, bson.errors.InvalidId):
-        flash("An error with the database occurred, couldn't find recipe", e)
-        return render_template("/error.html", {"message": "..."})
+def handle_generic_error(e):
+    traceback.print_exc()
+    if isinstance(e, KeyError):
+        flash("Seems like you're not logged in yet!")
+    return (render_template('error.html',
+            error_message="We couldn't handle your request",
+            error_code=500), 500)
 
-    if isinstance(e, pymongo.errors.CursorNotFound):
-        flash("An error with the database occurred, couldn't find recipe", e)
-    print(type(e))
-    return render_template("/error.html", {...}), 500
-"""
-
-if __name__ == "__main__":
-    app.run(host=os.environ.get("IP"),
-            port=int(os.environ.get("PORT")),
-            debug=True)
+if __name__ == '__main__':
+    app.run(host=os.environ.get('IP'), port=int(os.environ.get('PORT')), debug=True)
