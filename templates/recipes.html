@@ -4,11 +4,13 @@
 
 {% block content_without_container %}
 <!-- website header and hero image -->
-<div class="hero-image">
-    <div class="hero-text">
-       <h1>Three steps how to use the students recipes website</h1>
+ <div class="container-fluid px-0 text-center">
+  <div class="row">
+    <div class="col-md-12">
+      <img src="static/images/home2.jpeg"  class="img-responsive center-block  rounded" alt=""/>
     </div>
- </div>
+  </div>
+  </div>
  <!-- information how to use website -->
  <section class="py-3">
     <div class="container">
@@ -36,7 +38,7 @@
 
 {% block content %}
 
-<h3 class="light-blue-text text-darken-4 center-align">All Tasks</h3>
+<h3 class="light-blue-text text-darken-4 center-align">All Recipes</h3>
 
     <div class="accordion" id="accordionExample">
       {% for recipe in recipes %}
@@ -62,6 +64,7 @@
 
                 {% endfor %}
               </ul>
+              <p>{{ recipe.preparation_steps }}</p>
             </div>
             <div>
               {% if session.user|lower == recipe.created_by|lower %}

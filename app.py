@@ -213,6 +213,7 @@ def add_recipe():
                 'created_by': session['user'],
                 'ingredients': json.loads(request.form.get('ingredients')),
                 'photo': file_path,
+                'preparation_steps': request.form.get('preparation_steps')
             }
             mongo.db.recipes.insert_one(recipe)
             flash('recipe Successfully Added')
