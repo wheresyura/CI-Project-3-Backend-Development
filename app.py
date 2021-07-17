@@ -234,6 +234,9 @@ def edit_recipe(recipe_id):
             'recipe_description': request.form.get('recipe_description'),
             'preparation_time': request.form.get('preparation_time'),
             'created_by': session['user'],
+            'photo': request.form.get('recipe_picture'),
+            'preparation_steps': request.form.get('preparation_steps'),
+            'preparation_time': request.form.get('preparation_time')
             # 'ingredients': json.loads(request.form.get('ingredients')),
             }
         mongo.db.recipes.update({'_id': ObjectId(recipe_id)}, recipe)

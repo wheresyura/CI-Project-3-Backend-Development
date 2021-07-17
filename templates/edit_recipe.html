@@ -43,6 +43,21 @@
                     <label for="recipe_description">recipe Description</label>
       </div>
 
+      <div class="mb-3 w-50 p-3">
+        <textarea id="preparation_steps" name="preparation_steps" minlength="5"
+                        maxlength="200" class="materialize-textarea validate" required>{{- recipe.preparation_steps -}}</textarea>
+                    <label for="recipe_description">preparation steps</label>
+      </div>
+
+      <div class="mb-3 w-50 p-3">
+        <input id="preparation_time" name="preparation_time" min="1" 
+        type="number" class="validate" value="{{ recipe.preparation_time }}" required>
+         <label for="preparation_time">preparation time</label>
+      </div>
+
+      <input type="hidden" name="recipe_picture" value="{{  recipe.photo }}">
+
+
       <!-- <hr>
       <h3>Ingredients list</h3>
       <input type="hidden" id="ingredients" name="ingredients" value="{{ ingredients }}" >
