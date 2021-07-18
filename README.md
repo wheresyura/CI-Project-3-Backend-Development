@@ -163,11 +163,14 @@ The website has 5 main features:
 The website is mobile responsive and works on all devices and fills the page as needed, optimising the content for that device.
  
 #### Using Code Validators & Lighthouse
+
+I got my covid 19 Vaccine on the 17/07/2021 and the project is due 18/07/2021 I ussually leave this to the last day, however felt a bit under the weather yesterday after it so could not resolve all issues as I had hopped. 
  
-- I used the [W3C](https://validator.w3.org/) and was able to solve all problems associated with my code, and pass all of the tests except the once not on my url link, from other resources I used. 
-- I used the [Html validator](https://validator.w3.org/) and was able to solve all problems and had no issues with my html, I did get a score of four warnings but they were not errors.
-- I used the 	[Jshint](https://jshint.com/) and was able to not get any errors but I did get 51 warnings, most of which seemed like they were just browser dependent.
-- I used [Lighthouse click here for the report](https://developers.google.com/web/tools/lighthouse) in the developers tools and was able to get a good score under those parameters.
+- I used the [W3C](https://validator.w3.org/) and was able to solve most of problems associated with my code, and pass all of the tests except the once not on my url link, from other resources I used. 
+- I used the [Html validator](https://validator.w3.org/) and was able to solve most problems and had no issues with my html, I got some warnings but not many errors.
+- I used the 	[Jshint](https://jshint.com/) and was able to resolve most problems most of which seemed like they were just browser dependent.
+- I used [Pep8](http://pep8online.com/) - I had resoleved most of the issues but still had a handfull of problems associated with lines being too long.
+- I used [Lighthouse click here for the report](https://developers.google.com/web/tools/lighthouse) in the developers tools and was able to get a satisfactory score. 
  
  
  
