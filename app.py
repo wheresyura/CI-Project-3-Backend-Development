@@ -37,6 +37,8 @@ def get_recipes():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """Function for registering 
+    """
     if request.method == 'POST':
         # check if username already exists in db
         existing_user = \
@@ -58,6 +60,8 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Function for login 
+    """
     if request.method == 'POST':
         # check if username exists in db
         existing_user = \
@@ -83,6 +87,8 @@ def login():
 
 @app.route('/profile/<username>', methods=['GET', 'POST'])
 def profile(username):
+    """Function for username and database get and post methods 
+    """
     if is_logged_in(session):
         # grab the session user's username from db
         username = mongo.db.users.find_one({'username': session['user']})['username']
@@ -92,6 +98,8 @@ def profile(username):
 
 @app.route('/logout')
 def logout():
+    """Function for loging out  
+    """
     if is_logged_in(session):
         # remove user from session cookie
         flash('You have been logged out')
@@ -101,6 +109,8 @@ def logout():
 
 @app.route('/add_recipe', methods=['GET', 'POST'])
 def add_recipe():
+    """Function for an existing user to create a new recipe
+    """
     if request.method == 'POST':
         # check if the post request has the file part
         file = request.files.get('file')
@@ -130,6 +140,8 @@ def add_recipe():
 
 @app.route('/edit_recipe/<recipe_id>', methods=['GET', 'POST'])
 def edit_recipe(recipe_id):
+    """Function for an existing user to edit a recipe
+    """
     if is_logged_in(session) and request.method == 'POST':
         recipe = {
             'category_name': request.form.get('category_name'),
@@ -152,6 +164,8 @@ def edit_recipe(recipe_id):
 
 @app.route('/delete_recipe/<recipe_id>')
 def delete_recipe(recipe_id):
+    """Function for an existing user to delete a recipe
+    """
     mongo.db.recipes.remove({'_id': ObjectId(recipe_id)})
     flash('Recipe Successfully Deleted')
     return redirect(url_for('get_recipes'))
@@ -159,6 +173,8 @@ def delete_recipe(recipe_id):
 
 @app.route('/get_categories')
 def get_categories():
+    """This function does not work, uses old parts from the tutorial, keeping here as I want to go back to add this functionality
+    """
     categories = list(mongo.db.categories.find().sort('category_name',
                       1))
     return render_template('categories.html', categories=categories)
@@ -166,6 +182,8 @@ def get_categories():
 
 @app.route('/add_category', methods=['GET', 'POST'])
 def add_category():
+    """This function does not work, uses old parts from the tutorial, keeping here as I want to go back to add this functionality
+    """
     if request.method == 'POST':
         category = {'category_name': request.form.get('category_name')}
         mongo.db.categories.insert_one(category)

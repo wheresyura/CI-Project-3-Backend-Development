@@ -1,3 +1,4 @@
+//function for allowing you to add ingredients to the web form
 function add_ingridient(){
     
     let hidden_ingredients = $('#ingredients');
@@ -17,8 +18,9 @@ function add_ingridient(){
 
     display_ingridients(ingredients);
 }
-
+ //function for allowing you to remove ingredients to the web form
 function remove_ingridient(name){
+   
     let hidden_ingredients = $('#ingredients');
     let ingredients = JSON.parse(hidden_ingredients.val());
 
@@ -30,6 +32,7 @@ function remove_ingridient(name){
     }
 }
 
+//function to display the information on the webpage
 function display_ingridients(ingredients){
     let hidden_ingredients = $('#ingredients');
 
