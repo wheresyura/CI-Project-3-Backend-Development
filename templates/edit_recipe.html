@@ -1,87 +1,55 @@
 {% extends "base.html" %}
 {% block content %}
-
-    <h3>Edit recipe</h3>
-
-
-    <form method="POST" action="{{ url_for('edit_recipe', recipe_id=recipe._id) }}">
-       <!-- category selection -->
-        <div class="row">
-				<div class="input-field col s12">
-                    <i class="fas fa-folder-open prefix light-blue-text text-darken-4"></i>
-					<select id="category_name" name="category_name" class="validate" required>
-                        <option value="" disabled selected>Choose Category</option>
-                        {% for category in categories %}
-                            {% if category.category_name == recipe.category_name %}
-                                <option value="{{ category.category_name }}" selected>{{ category.category_name }}</option>
-                            {% else %}
-                                <option value="{{ category.category_name }}">{{ category.category_name }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-					<label for="category_name">recipe Category</label>
-				</div>
-			</div>
-    <!-- <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-              Dropdown button
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-            </ul>
-    </div> -->
-    <!-- recipe name -->
-    <div class="mb-3 w-50 p-3">
-        <input id="recipe_name" name="recipe_name" minlength="5" maxlength="50"
-        type="text" class="validate" value="{{ recipe.recipe_name }}" required>
-    <label for="recipe_name">recipe Name</label>
+<h3>Edit recipe</h3>
+<form method="POST" action="{{ url_for('edit_recipe', recipe_id=recipe._id) }}">
+   <!-- category selection -->
+   <div class="row">
+      <div class="input-field col s12">
+         <i class="fas fa-folder-open prefix light-blue-text text-darken-4"></i>
+         <select id="category_name" name="category_name" class="validate" required>
+            <option value="" disabled selected>Choose Category</option>
+            {% for category in categories %}
+            {% if category.category_name == recipe.category_name %}
+            <option value="{{ category.category_name }}" selected>{{ category.category_name }}</option>
+            {% else %}
+            <option value="{{ category.category_name }}">{{ category.category_name }}</option>
+            {% endif %}
+            {% endfor %}
+         </select>
+         <label for="category_name">recipe Category</label>
       </div>
-       <!-- recipe description -->
-      <div class="mb-3 w-50 p-3">
-        <textarea id="recipe_description" name="recipe_description" minlength="5"
-                        maxlength="200" class="materialize-textarea validate" required>{{- recipe.recipe_description -}}</textarea>
-                    <label for="recipe_description">recipe Description</label>
-      </div>
-
-      <div class="mb-3 w-50 p-3">
-        <textarea id="preparation_steps" name="preparation_steps" minlength="5"
-                        maxlength="200" class="materialize-textarea validate" required>{{- recipe.preparation_steps -}}</textarea>
-                    <label for="recipe_description">preparation steps</label>
-      </div>
-
-      <div class="mb-3 w-50 p-3">
-        <input id="preparation_time" name="preparation_time" min="1" 
-        type="number" class="validate" value="{{ recipe.preparation_time }}" required>
-         <label for="preparation_time">preparation time</label>
-      </div>
-
-      <input type="hidden" name="recipe_picture" value="{{  recipe.photo }}">
-
-
-      <!-- <hr>
-      <h3>Ingredients list</h3>
-      <input type="hidden" id="ingredients" name="ingredients" value="{{ ingredients }}" >
-      
-      
-        <h4>Ingredients:</h4>
-        <ul>
-        {% for ingredient in recipe.ingredients %}
-          <li>{{ ingredient.name }} ({{ ingredient.amount }} {{ ingredient.measure }}) </li>
-
-
-        {% endfor %}
-      </ul> -->
-
-      </div>
-
-       <!-- cancel button -->
-       <a href="{{ url_for('get_recipes') }}" class="btn">
-        Cancel <i class="fas fa-times-circle right"></i>
-    </a>
-        <!-- submit button -->
-      <button type="submit" class="btn btn-dark">Edit <i class="fas fa-edit right"></i></button>
-     
-    
-    </form>
-
+   </div>
+   <!-- recipe name -->
+   <div class="mb-3 w-50 p-3">
+      <input id="recipe_name" name="recipe_name" minlength="5" maxlength="50"
+         type="text" class="validate" value="{{ recipe.recipe_name }}" required>
+      <label for="recipe_name">recipe Name</label>
+   </div>
+   <!-- recipe description -->
+   <div class="mb-3 w-50 p-3">
+      <textarea id="recipe_description" name="recipe_description" minlength="5"
+         maxlength="200" class="materialize-textarea validate" required>{{- recipe.recipe_description -}}</textarea>
+      <label for="recipe_description">recipe Description</label>
+   </div>
+   <!-- preparation steps -->
+   <div class="mb-3 w-50 p-3">
+      <textarea id="preparation_steps" name="preparation_steps" minlength="5"
+         maxlength="200" class="materialize-textarea validate" required>{{- recipe.preparation_steps -}}</textarea>
+      <label for="recipe_description">preparation steps</label>
+   </div>
+   <!-- preparation time -->
+   <div class="mb-3 w-50 p-3">
+      <input id="preparation_time" name="preparation_time" min="1" 
+         type="number" class="validate" value="{{ recipe.preparation_time }}" required>
+      <label for="preparation_time">preparation time</label>
+   </div>
+   <input type="hidden" name="recipe_picture" value="{{  recipe.photo }}">
+   </div>
+   <!-- cancel button -->
+   <a href="{{ url_for('get_recipes') }}" class="btn">
+   Cancel <i class="fas fa-times-circle right"></i>
+   </a>
+   <!-- submit button -->
+   <button type="submit" class="btn btn-dark">Edit <i class="fas fa-edit right"></i></button>
+</form>
 {% endblock %}

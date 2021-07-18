@@ -1,39 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
 
+<!-- login form -->
 <h3 class="center-align">Log In</h3>
-
 <form method="POST" action="{{ url_for('login') }}">
-    <div class="mb-3">
-		
+   <div class="mb-3">
       <label for="username" class="form-label">Username</label>
       <input type="text" name="username" class="validate" id="username" minlength="5"
-      maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" required>
-      
-    </div>
-    <div class="mb-3">
-
-                       
+         maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" required>
+   </div>
+   <div class="mb-3">
       <label for="password" class="form-label">Password</label>
       <input type="password" class="validate" id="password" name="password" minlength="5"
-      maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" required>
-    </div>
-    <div class="mb-3 form-check">
+         maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" required>
+   </div>
+   <div class="mb-3 form-check">
       <input type="checkbox" class="form-check-input" id="exampleCheck1">
       <label class="form-check-label" for="exampleCheck1">Check me out</label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Log In</button>
-  </form>
-
-  <div class="row">
-    <div>
-        <p class="center-align">
-            New Here?
-            <a href="{{ url_for('register') }}">Register Account</a>
-        </p>
-    </div>
+   </div>
+   <button type="submit" class="btn btn-primary">Log In</button>
+</form>
+<div class="row">
+   <div>
+      <p class="center-align">
+         New Here?
+         <a href="{{ url_for('register') }}">Register Account</a>
+      </p>
+   </div>
 </div>
-
-
-  {% endblock %}
+{% endblock %}

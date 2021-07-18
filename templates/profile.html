@@ -1,11 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
-
 <div class="row">
-          <h3>
-              {{ username }}'s Profile
-          </h3>
+   <h3>
+      {{ username }}'s Profile
+      <br> Have a look how to use the site bellow! Enjoy sharing your recipes.
+   </h3>
 </div>
-
-
-  {% endblock %}
+<!-- information how to use website -->
+<section class="py-3">
+   <div class="container">
+      <div class="row">
+         <div class="col-lg-4">
+            <h2><i class="fas fa-users"></i></i>1.  Register or login as user</h2>
+            <p>Once you have loged in as a user you will be able to create recipes that all other students will be able to see.</p>
+         </div>
+         <div class="col-lg-4">
+            <h2><i class="fas fa-server"></i>2. Make your recipes and save them to the database for everyone to see.</h2>
+            <p>Create, Edit, Update and Delete any of the recipes you would like to add by clicking on the new recipe button.</p>
+         </div>
+         <div class="col-lg-4">
+            <h2><i class="fas fa-utensils"></i> 3. Enjoy seeing everyone's recipes</h2>
+            <p>Once you have created a recipe it will live in our database for all other students to try out and enjoy. Don't worry though only you will be able to edit and delete this recipe.</p>
+         </div>
+      </div>
+   </div>
+</section>
+{% endblock %}

@@ -1,40 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h3 class="light-blue-text text-darken-4 center-align">Manage Categories</h3>
-
-  
-        <div>
-            <a href="{{ url_for('add_category') }}" class="btn">
-                Add Category <i class="fas fa-plus-square right"></i>
-            </a>
-        </div>
-    
-
-    <div class="card" style="width: 18rem;">
-        {% for category in categories %}
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">{{ category.category_name }}</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">An item</li>
-          <li class="list-group-item">A second item</li>
-          <li class="list-group-item">A third item</li>
-        </ul>
-        <div class="card-body">
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
-        </div>
-        <!-- cancel button -->
-       <a href="{{ url_for('get_tasks') }}" class="btn">
-        Cancel <i class="fas fa-times-circle right"></i>
-    </a>
-        <!-- submit button -->
-      <button type="submit" class="btn btn-dark">Edit <i class="fas fa-edit right"></i></button>
-     
-        {% endfor %}
-      </div>
-
+<!-- please note I did not end up using this page at all --> 
+<h3 class="light-blue-text text-darken-4 center-align">Manage Categories</h3>
+<div>
+   <a href="{{ url_for('add_category') }}" class="btn">
+   Add Category <i class="fas fa-plus-square right"></i>
+   </a>
+</div>
+<div class="card" style="width: 18rem;">
+   {% for category in categories %}
+   <img src="..." class="card-img-top" alt="...">
+   <div class="card-body">
+      <h5 class="card-title">{{ category.category_name }}</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+   </div>
+   <ul class="list-group list-group-flush">
+      <li class="list-group-item">An item</li>
+      <li class="list-group-item">A second item</li>
+      <li class="list-group-item">A third item</li>
+   </ul>
+   <div class="card-body">
+      <a href="#" class="card-link">Card link</a>
+      <a href="#" class="card-link">Another link</a>
+   </div>
+   <!-- cancel button -->
+   <a href="{{ url_for('get_tasks') }}" class="btn">
+   Cancel <i class="fas fa-times-circle right"></i>
+   </a>
+   <!-- submit button -->
+   <button type="submit" class="btn btn-dark">Edit <i class="fas fa-edit right"></i></button>
+   {% endfor %}
+</div>
 {% endblock %}
