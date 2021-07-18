@@ -1,4 +1,4 @@
-<img src="assets/images/readme_1.png" style="margin: 0;">
+<img src="static/images/2.png" style="margin: 0;">
  
 # CI: Project-3 Backend Development - Recipe website
  
