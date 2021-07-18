@@ -72,10 +72,10 @@ The single time I used a background image as the hero cover I took it from Googl
  
 ### Wireframes
 The wireframes were created using pen and paper during the scoping part of the project, when I planned the design of this website for the desktop and be responsive version on mobile and tablet.
-- [Schema](static/images/mockups/wire_schema.jpg)
-- [Mobile Version](static/images/mockups/wire_phone.jpg)
-- [Tablet Version](static/images/mockups/wire_tablet.jpg)
-- [Web Version](static/images/mockups/wire_desktop.jpg)
+- [Schema](static/images/mockups/wire_schema.jpeg)
+- [Mobile Version](static/images/mockups/wire_phone.jpeg)
+- [Tablet Version](static/images/mockups/wire_tablet.jpeg)
+- [Web Version](static/images/mockups/wire_desktop.jpeg)
  
  
 ## 2.Features
